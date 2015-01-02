@@ -1,3 +1,4 @@
+require 'logger'
 require 'socket'
 require 'uri'
 
@@ -11,10 +12,11 @@ class Server
     'css' => 'text/css'
   }
 
-  attr_accessor :port
+  attr_accessor :port, :logger
 
   def initialize(port: 2835)
     @port = port
+    @logger = Logger.new('./log/server.log')
     @pid = nil
   end
 
@@ -55,13 +57,13 @@ class Server
 
       # Create a new server on port 2835 (1 ounce = 28.35 grams)
       server = TCPServer.new('localhost', 2835)
-      puts 'Listening on http://localhost:2835...'
+      @logger.info 'Listening on http://localhost:2835...'
 
       loop do
         socket = server.accept
         request_line = socket.gets
 
-        puts "* #{request_line}"
+        @logger.info "* #{request_line}"
 
         path = self.class.requested_file(request_line)
         # Serve index.html if requested file is a directory
@@ -101,7 +103,7 @@ class Server
   end
 
   def stop
-    puts 'Shutting down'
+    @logger.info 'Shutting down'
     Process.kill('INT', @pid)
     Process.wait
     @pid = nil
@@ -110,6 +112,8 @@ end
 
 if __FILE__ == $0
   server = Server.new
+  server.logger = Logger.new(STDOUT)
+  server.logger.formatter = proc { |severity, datetime, progname, msg| "#{msg}\n" }
   begin
     server.serve
     Process.wait
