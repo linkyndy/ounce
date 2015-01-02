@@ -8,7 +8,7 @@ RSpec.configure do |c|
 end
 
 RSpec.describe Server do
-  describe '.content type' do
+  describe '.content_type' do
     it 'returns the correct content type for a path' do
       expect(Server.content_type('index.html')).to eq('text/html')
     end
