@@ -1,8 +1,10 @@
 require 'spec_helper'
 require './server'
+require 'capybara/rspec'
 
 RSpec.configure do |c|
   c.include Helper
+  Capybara.default_driver = :selenium
 end
 
 RSpec.describe Server do
@@ -113,6 +115,23 @@ RSpec.describe Server do
     it 'resets @pid' do
       @server.stop
       expect(@server.instance_variable_get(:@pid)).to be_nil
+    end
+  end
+
+  feature 'serving correct pages' do
+    scenario 'serve a given path' do
+      visit 'localhost:2835/test/page.html'
+      expect(page).to have_content('page.html')
+    end
+
+    scenario 'serve index.html if given path is directory' do
+      visit 'localhost:2835/test'
+      expect(page).to have_content('index.html')
+    end
+
+    scenario 'show 404 for a file not found' do
+      visit 'localhost:2835/test/not_there.html'
+      expect(page).to have_content('File not found')
     end
   end
 end
