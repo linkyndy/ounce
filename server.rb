@@ -15,6 +15,7 @@ class Server
 
   def initialize(port: 2835)
     @port = port
+    @pid = nil
   end
 
   # Return requested file content type based on its extension
@@ -103,6 +104,7 @@ class Server
     puts 'Shutting down'
     Process.kill('INT', @pid)
     Process.wait
+    @pid = nil
   end
 end
 

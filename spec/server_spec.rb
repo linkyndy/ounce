@@ -56,6 +56,10 @@ RSpec.describe Server do
       expect(@server.instance_variable_get(:@pid)).not_to eq(Process.pid)
     end
 
+    it 'sets @pid' do
+      expect(@server.instance_variable_get(:@pid)).not_to be_nil
+    end
+
     it 'serves the correct file' do
       response = make_request('/test/page.html')
       expect(response.body).to eq("page.html\n")
@@ -104,6 +108,11 @@ RSpec.describe Server do
       expect {
         Process.kill(0, pid)
       }.to raise_error(Errno::ESRCH)
+    end
+
+    it 'resets @pid' do
+      @server.stop
+      expect(@server.instance_variable_get(:@pid)).to be_nil
     end
   end
 end
