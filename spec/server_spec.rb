@@ -38,6 +38,18 @@ RSpec.describe Server do
     end
   end
 
+  describe '#initialize' do
+    it 'sets the correct port based on input' do
+      server = Server.new(port: 111)
+      expect(server.port).to eq(111)
+    end
+
+    it 'sets the default port if on input' do
+      server = Server.new
+      expect(server.port).to eq(2835)
+    end
+  end
+
   describe '#serve' do
     before do
       @server = Server.new

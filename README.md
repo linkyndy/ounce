@@ -28,6 +28,15 @@ From a script:
 @server.stop
 ```
 
+Configuration
+-------------
+
+You can configure the port on which the server listens to new connections:
+
+```
+@server = Server.new(port: 2836)
+```
+
 Tests
 -----
 
