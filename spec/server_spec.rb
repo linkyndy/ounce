@@ -5,6 +5,8 @@ require 'capybara/rspec'
 RSpec.configure do |c|
   c.include Helper
   Capybara.default_driver = :selenium
+  Capybara.app_host = 'http://localhost:2835'
+  Capybara.run_server = false
 end
 
 RSpec.describe Server do
@@ -119,18 +121,27 @@ RSpec.describe Server do
   end
 
   feature 'serving correct pages' do
+    before do
+      @server = Server.new
+      @server.serve
+    end
+
+    after do
+      @server.stop
+    end
+
     scenario 'serve a given path' do
-      visit 'localhost:2835/test/page.html'
+      visit '/test/page.html'
       expect(page).to have_content('page.html')
     end
 
     scenario 'serve index.html if given path is directory' do
-      visit 'localhost:2835/test'
+      visit '/test'
       expect(page).to have_content('index.html')
     end
 
     scenario 'show 404 for a file not found' do
-      visit 'localhost:2835/test/not_there.html'
+      visit '/test/not_there.html'
       expect(page).to have_content('File not found')
     end
   end
