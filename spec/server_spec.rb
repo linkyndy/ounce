@@ -1,13 +1,5 @@
 require 'spec_helper'
 require './server'
-require 'capybara/rspec'
-
-RSpec.configure do |c|
-  c.include Helper
-  Capybara.default_driver = :selenium
-  Capybara.app_host = 'http://localhost:2835'
-  Capybara.run_server = false
-end
 
 RSpec.describe Server do
   describe '.content_type' do
